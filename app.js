@@ -28,7 +28,7 @@ async function loadModels() {
         statusEl.textContent = '⏳ Загрузка моделей...';
         statusEl.style.borderColor = '#58a6ff';
 
-        const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@justadudewhohacks/face-api.js@0.22.2/data/models/';
+        const MODEL_URL = './models/';
         await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
         await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
         await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
