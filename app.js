@@ -21,15 +21,22 @@ const etalonPreviewImg = document.getElementById('etalonPreviewImg');
 const etalonNameInput = document.getElementById('etalonNameInput');
 
 // ============================================================
-//  1. ЗАГРУЗКА МОДЕЛЕЙ
+//  1. ЗАГРУЗКА МОДЕЛЕЙ (УНИВЕРСАЛЬНАЯ)
 // ============================================================
 async function loadModels() {
     try {
         statusEl.textContent = '⏳ Загрузка моделей...';
         statusEl.style.borderColor = '#58a6ff';
 
-        // ПРАВИЛЬНЫЙ ПУТЬ ДЛЯ GITHUB PAGES
-        const MODEL_URL = 'https://spaeeell.github.io/face-recognizer-js/models/';
+        // Автоматически выбираем путь
+        let MODEL_URL;
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            // Локально (Live Server)
+            MODEL_URL = './models/';
+        } else {
+            // На GitHub Pages
+            MODEL_URL = 'https://spaeeell.github.io/face-recognizer-js/models/';
+        }
         
         console.log('🔄 Загрузка моделей из:', MODEL_URL);
         
@@ -49,7 +56,7 @@ async function loadModels() {
         
     } catch (error) {
         console.error('❌ Ошибка загрузки моделей:', error);
-        statusEl.textContent = '❌ Ошибка загрузки моделей. Проверьте путь к models.';
+        statusEl.textContent = '❌ Ошибка загрузки моделей. Проверьте интернет.';
         statusEl.style.borderColor = '#da3633';
     }
 }
