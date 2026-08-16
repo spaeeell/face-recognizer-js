@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Face Recognizer</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <!-- ШАПКА -->
+        <header>
+            <h1>👤 Face Recognizer</h1>
+            <p class="subtitle">Распознавание лиц в браузере</p>
+            <div class="status" id="status">⏳ Загрузка модели...</div>
+        </header>
+
+        <!-- ОСНОВНАЯ СЕТКА -->
+        <div class="main-grid">
+
+            <!-- ЛЕВАЯ КОЛОНКА: ЭТАЛОНЫ -->
+            <div class="panel">
+                <h2>📁 База эталонов</h2>
+                <p class="hint">Загрузите фото людей, которых нужно узнавать</p>
+
+                <!-- ОБЛАСТЬ ЗАГРУЗКИ ФОТО -->
+                <div class="upload-area" id="uploadEtalon">
+                    <input type="file" id="etalonInput" accept="image/*" />
+                    <label for="etalonInput">
+                        <span class="icon">📸</span>
+                        Выбрать фото
+                    </label>
+                    <p class="sub-hint">выберите одно фото</p>
+                </div>
+
+                <!-- ПРЕВЬЮ ВЫБРАННОГО ФОТО И КНОПКА ДОБАВЛЕНИЯ -->
+                <div id="etalonPreviewArea" style="display: none; margin-top: 16px;">
+                    <div style="display: flex; gap: 16px; align-items: center; background: #0d1117; padding: 12px; border-radius: 10px; border: 1px solid #30363d;">
+                        <div style="width: 80px; height: 80px; border-radius: 8px; overflow: hidden; flex-shrink: 0; border: 2px solid #30363d;">
+                            <img id="etalonPreviewImg" src="" alt="предпросмотр" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        <div style="flex: 1; min-width: 0;">
+                            <input type="text" id="etalonNameInput" placeholder="Введите имя..." style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: #e6edf3; font-size: 0.95rem; box-sizing: border-box;">
+                        </div>
+                        <button id="addEtalonBtn" class="btn btn-success" style="white-space: nowrap;">
+                            ➕ Добавить
+                        </button>
+                    </div>
+                </div>
+
+                <!-- СЕТКА ЭТАЛОНОВ -->
+                <div class="photo-grid" id="etalonList">
+                    <div class="empty-message">Нет эталонов. Добавьте фото!</div>
+                </div>
+
+                <div class="panel-footer">
+                    <span class="counter" id="etalonCount">Эталонов: 0</span>
+                    <button class="btn btn-danger" id="clearEtalons">🗑 Очистить всё</button>
+                </div>
+            </div>
+
+            <!-- ПРАВАЯ КОЛОНКА: РАСПОЗНАВАНИЕ -->
+            <div class="panel">
+                <h2>🔍 Распознавание</h2>
+                <p class="hint">Загрузите фото, чтобы узнать человека</p>
+
+                <div class="upload-area" id="uploadTest">
+                    <input type="file" id="testInput" accept="image/*" />
+                    <label for="testInput">
+                        <span class="icon">📸</span>
+                        Загрузить фото
+                    </label>
+                    <p class="sub-hint">одно фото для распознавания</p>
+                </div>
+
+                <div class="test-preview" id="testPreview">
+                    <span class="placeholder">🖼 Фото появится здесь</span>
+                </div>
+
+                <!-- КНОПКА РАСПОЗНАВАНИЯ -->
+                <div style="margin-top: 12px;">
+                    <button id="recognizeBtn" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 1rem;">
+                        🔍 Распознать
+                    </button>
+                </div>
+
+                <div class="result-area" id="testResult">
+                    <span class="placeholder">⬅️ Загрузите фото для распознавания</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ПОДВАЛ -->
+        <footer>
+            <span>⚡ Модель: FaceNet512 · Работает в браузере</span>
+        </footer>
+    </div>
+
+    <script src="face-api.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
