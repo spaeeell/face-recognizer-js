@@ -4,7 +4,7 @@
 
 let etalons = [];
 let modelsLoaded = false;
-let pendingFile = null;
+let pendingFile = null; // временное хранение выбранного файла
 
 const statusEl = document.getElementById('status');
 const etalonInput = document.getElementById('etalonInput');
@@ -21,43 +21,26 @@ const etalonPreviewImg = document.getElementById('etalonPreviewImg');
 const etalonNameInput = document.getElementById('etalonNameInput');
 
 // ============================================================
-//  1. ЗАГРУЗКА МОДЕЛЕЙ (УНИВЕРСАЛЬНАЯ)
+//  1. ЗАГРУЗКА МОДЕЛЕЙ
 // ============================================================
 async function loadModels() {
     try {
         statusEl.textContent = '⏳ Загрузка моделей...';
         statusEl.style.borderColor = '#58a6ff';
 
-        // Автоматически выбираем путь
-        let MODEL_URL;
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            // Локально (Live Server)
-            MODEL_URL = './models/';
-        } else {
-            // На GitHub Pages
-            MODEL_URL = 'https://spaeeell.github.io/face-recognizer-js/models/';
-        }
-        
-        console.log('🔄 Загрузка моделей из:', MODEL_URL);
-        
+        const MODEL_URL = './models/';
         await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
-        console.log('✅ SSD Mobilenet v1 загружена');
-        
         await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-        console.log('✅ Face Landmark 68 загружена');
-        
         await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
-        console.log('✅ Face Recognition Net загружена');
 
         modelsLoaded = true;
         statusEl.textContent = '✅ Модели загружены! Можно работать.';
         statusEl.style.borderColor = '#3fb950';
-        console.log('🎉 Все модели загружены успешно!');
-        
-    } catch (error) {
-        console.error('❌ Ошибка загрузки моделей:', error);
-        statusEl.textContent = '❌ Ошибка загрузки моделей. Проверьте интернет.';
+        console.log('✅ Все модели загружены');
+    } catch (e) {
+        statusEl.textContent = '❌ Ошибка загрузки моделей. Проверь папку models.';
         statusEl.style.borderColor = '#da3633';
+        console.error(e);
     }
 }
 
@@ -195,13 +178,14 @@ function showResult(results) {
 //  7. СОБЫТИЯ
 // ============================================================
 
-// ВЫБОР ФОТО ДЛЯ ЭТАЛОНА
+// --- ВЫБОР ФОТО ДЛЯ ЭТАЛОНА ---
 etalonInput.addEventListener('change', () => {
     const file = etalonInput.files[0];
     if (!file) return;
 
     pendingFile = file;
 
+    // Показываем превью
     const reader = new FileReader();
     reader.onload = (e) => {
         etalonPreviewImg.src = e.target.result;
@@ -213,7 +197,7 @@ etalonInput.addEventListener('change', () => {
     reader.readAsDataURL(file);
 });
 
-// КНОПКА "ДОБАВИТЬ ЭТАЛОН"
+// --- КНОПКА "ДОБАВИТЬ ЭТАЛОН" ---
 addBtn.addEventListener('click', async () => {
     if (!pendingFile) return;
 
@@ -227,6 +211,7 @@ addBtn.addEventListener('click', async () => {
         statusEl.textContent = `✅ Добавлен эталон: ${name}`;
         statusEl.style.borderColor = '#3fb950';
 
+        // Очищаем форму
         pendingFile = null;
         etalonPreviewArea.style.display = 'none';
         etalonPreviewImg.src = '';
@@ -242,11 +227,12 @@ addBtn.addEventListener('click', async () => {
     }
 });
 
-// ВЫБОР ФОТО ДЛЯ РАСПОЗНАВАНИЯ
+// --- ВЫБОР ФОТО ДЛЯ РАСПОЗНАВАНИЯ ---
 testInput.addEventListener('change', () => {
     const file = testInput.files[0];
     if (!file) return;
 
+    // Превью
     const reader = new FileReader();
     reader.onload = (e) => {
         testPreview.innerHTML = `<img src="${e.target.result}" alt="тест">`;
@@ -255,7 +241,7 @@ testInput.addEventListener('change', () => {
     reader.readAsDataURL(file);
 });
 
-// КНОПКА "РАСПОЗНАТЬ"
+// --- КНОПКА "РАСПОЗНАТЬ" ---
 recognizeBtn.addEventListener('click', async () => {
     const file = testInput.files[0];
     if (!file) return;
@@ -285,7 +271,7 @@ recognizeBtn.addEventListener('click', async () => {
     recognizeBtn.textContent = '🔍 Распознать';
 });
 
-// ОЧИСТКА
+// --- ОЧИСТКА ВСЕХ ЭТАЛОНОВ ---
 clearBtn.onclick = () => {
     if (confirm('Удалить все эталоны?')) {
         etalons = [];
@@ -298,11 +284,11 @@ clearBtn.onclick = () => {
     }
 };
 
+// Отключаем кнопки изначально
 addBtn.disabled = true;
 recognizeBtn.disabled = true;
 
 // ============================================================
 //  8. СТАРТ
 // ============================================================
-console.log('🚀 Запуск Face Recognizer...');
 loadModels();
